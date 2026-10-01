@@ -1,0 +1,64 @@
+const textInput = document.getElementById('text-input');
+const wordCountEl = document.getElementById('word-count');
+const charCountEl = document.getElementById('char-count');
+const sentenceCountEl = document.getElementById('sentence-count');
+const readingTimeEl = document.getElementById('reading-time');
+const charNoSpaceEl = document.getElementById('char-no-space');
+const paragraphCountEl = document.getElementById('paragraph-count');
+const clearBtn = document.getElementById('clear-btn');
+const bgToggleBtn = document.getElementById('bg-toggle-btn');
+
+// Array of vibrant gradients for the background generator bonus
+const gradients = [
+    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)",
+    "linear-gradient(135deg, #fbc531 0%, #e84118 100%)",
+    "linear-gradient(135deg, #00b09b 0%, #96c93d 100%)",
+    "linear-gradient(135deg, #2af598 0%, #009efd 100%)",
+    "linear-gradient(135deg, #ff0844 0%, #ffb199 100%)"
+];
+
+function updateMetrics() {
+    const text = textInput.value;
+
+    // 1. Characters count
+    const charCount = text.length;
+    charCountEl.textContent = charCount;
+
+    // 2. Characters without spaces
+    const charNoSpace = text.replace(/\s/g, '').length;
+    charNoSpaceEl.textContent = charNoSpace;
+
+    // 3. Word count (splitting by whitespace and filtering out empty strings)
+    const words = text.trim() === '' ? [] : text.trim().split(/\s+/);
+    const wordCount = words.length;
+    wordCountEl.textContent = wordCount;
+
+    // 4. Sentence count (matching sentence-ending punctuation . ! ?)
+    const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g);
+    const sentenceCount = sentences ? sentences.length : (text.trim() !== '' ? 1 : 0);
+    sentenceCountEl.textContent = sentenceCount;
+
+    // 5. Paragraph count (splitting by line breaks)
+    const paragraphs = text.split(/\n+/).filter(p => p.trim() !== '').length;
+    paragraphCountEl.textContent = paragraphs;
+
+    // 6. Reading time (assuming average 200 words per minute)
+    const readMinutes = Math.ceil(wordCount / 200);
+    readingTimeEl.textContent = `${readMinutes} min`;
+}
+
+// Event Listeners
+textInput.addEventListener('input', updateMetrics);
+
+clearBtn.addEventListener('click', () => {
+    textInput.value = '';
+    updateMetrics();
+    textInput.focus();
+});
+
+// Bonus: Random background generator
+bgToggleBtn.addEventListener('click', () => {
+    const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+    document.body.style.background = randomGradient;
+});
